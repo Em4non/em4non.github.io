@@ -17,8 +17,8 @@
   <meta name="keywords" content="">
   
     <meta property="og:type" content="website">
-<meta property="og:title" content="标签">
-<meta property="og:url" content="http://example.com/tags/index.html">
+<meta property="og:title" content="Em4non&#39;s Blog">
+<meta property="og:url" content="http://example.com/page/2/index.html">
 <meta property="og:site_name" content="Em4non&#39;s Blog">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:author" content="John Doe">
@@ -26,7 +26,7 @@
   
   
   
-  <title>标签 - Em4non&#39;s Blog</title>
+  <title>Em4non&#39;s Blog</title>
 
   <link  rel="stylesheet" href="/%3Chttps:/lib.baomitu.com/twitter-bootstrap/4.6.1/%3E/css/bootstrap.min.css" />
 
@@ -80,7 +80,7 @@
   <header>
     
 
-<div class="header-inner" style="height: 80vh;">
+<div class="header-inner" style="height: 100vh;">
   <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand" href="/">
@@ -186,7 +186,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="标签"></span>
+            <span id="subtitle" data-typed-text="Enjoy Your Life"></span>
           
         </div>
 
@@ -210,16 +210,254 @@
     
       <div class="container nopadding-x-md">
         <div id="board"
-          >
+          style="margin-top: 0">
           
           <div class="container">
             <div class="row">
               <div class="col-12 col-md-10 m-auto">
                 
 
-<div class="text-center tagcloud">
-  <a href="/tags/Web%E5%AD%A6%E4%B9%A0/" style="font-size: 15px; color: #bbe">Web学习</a>
-</div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/07/18/%E5%AF%B9LinuxSUID%E6%8F%90%E6%9D%83%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%BB%E7%BB%93/" target="_self">
+          
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2022/07/18/%E5%AF%B9LinuxSUID%E6%8F%90%E6%9D%83%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%BB%E7%BB%93/" target="_self">
+        <div>
+          对Linux|SUID提权的一些总结SUID简介通常来说，Linux运行一个程序，是使用当前运行这个程序的用户权限，这当然是合理的。但是有一些程序比较特殊，比如我们常用的ping命令 suid即set user id，是一种授予文件的权限类型，它允许用户使用者以文件所有者的权限来执行文件 普通用户之所以也可以使用ping命令，原因就在我们给ping这个可执行文件设置了suid权限  设置SUID
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-07-18 11:37" pubdate>
+              2022-07-18
+            </time>
+          </div>
+        
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/07/12/%5B%E8%93%9D%E5%B8%BD%E6%9D%AF%202021%5DOne%20Pointer%20PHP/" target="_self">
+          
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2022/07/12/%5B%E8%93%9D%E5%B8%BD%E6%9D%AF%202021%5DOne%20Pointer%20PHP/" target="_self">
+        <div>
+          [蓝帽杯 2021]One Pointer PHP在BUU上对这道题进行复现 打开环境，题目给了两个源码 add_api.php 12345678910111213141516&lt;?phpinclude &quot;user.php&quot;;if($user=unserialize($_COOKIE[&quot;data&quot;]))&#123;	$count[++$user-&gt;
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-07-12 11:29" pubdate>
+              2022-07-12
+            </time>
+          </div>
+        
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/07/11/TKCTF%20%E7%99%BD%E7%BB%99%E7%9A%84shell%E5%A4%8D%E7%8E%B0/" target="_self">
+          
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2022/07/11/TKCTF%20%E7%99%BD%E7%BB%99%E7%9A%84shell%E5%A4%8D%E7%8E%B0/" target="_self">
+        <div>
+          校赛 白给的shell复现参考该文章进行学习：https://www.freebuf.com/articles/web/192052.html 考察的是如何进行disable functions的绕过  源码是这样的，但是拿到shell却无法执行任何命令 然后看一下phpinfo  属于是把能用的函数都给禁用了 所以需要我们进行disable_funtions的绕过 这道题主要使用LD_PRELO
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-07-11 16:40" pubdate>
+              2022-07-11
+            </time>
+          </div>
+        
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/07/11/WMCTF-2020%20Make%20PHP%20Great%20Again/" target="_self">
+          
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2022/07/11/WMCTF-2020%20Make%20PHP%20Great%20Again/" target="_self">
+        <div>
+          WMCTF-2021 Make PHP Great Again And Again前言WMCTF2021中的一道题目 跟着赵总的博客进行了一波复现：https://www.zhaoj.in/read-6951.html 题目环境下载了docker file文件，在本地进行了复现 题目本身给了shell，但是有着诸多的限制，包括disable_functions，open_basedir，flag文
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-07-11 15:41" pubdate>
+              2022-07-11
+            </time>
+          </div>
+        
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/06/29/ACTF-GOGOGO/" target="_self">
+          
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2022/06/29/ACTF-GOGOGO/" target="_self">
+        <div>
+          ACTF-GOGOGO
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-06-29 20:48" pubdate>
+              2022-06-29
+            </time>
+          </div>
+        
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/06/28/XSS%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/" target="_self">
+          
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2022/06/28/XSS%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/" target="_self">
+        <div>
+          XSS漏洞学习XSS介绍与分类跨站脚本攻击(Cross Site Scripting)为了不与层叠样式表(Cascading Style Sheets)的缩写混淆，故缩写为XSS 恶意攻击者往Web页面里插入恶意Script代码，当用户浏览该页之时，嵌入其中Web里面的Script代码会被执行，从而达到恶意攻击用户的目的 反射型XSS又称非持久性XSS，这种攻击为一次性攻击 https://blo
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-06-28 22:30" pubdate>
+              2022-06-28
+            </time>
+          </div>
+        
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/06/28/GoAhead%E6%BC%8F%E6%B4%9E/" target="_self">
+          
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2022/06/28/GoAhead%E6%BC%8F%E6%B4%9E/" target="_self">
+        <div>
+          GoAhead漏洞分析GoAhead简介GoAhead是一个开源(商业许可)、简单、轻巧、功能强大、可以在多个平台运行的Web Server，多用于嵌入式系统、智能设备。其支持运行ASP、Javascript和标准的CGI程序，这个漏洞就出现在运行CGI程序的时候。 CVE-2017-17562 GoAhead远程代码执行漏洞分析漏洞简介CVE-2017-17562是一个远程命令执行漏洞 影响的版
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-06-28 14:05" pubdate>
+              2022-06-28
+            </time>
+          </div>
+        
+        
+        
+      </div>
+    </article>
+  </div>
+
+
+
+  <nav aria-label="navigation">
+    <span class="pagination" id="pagination">
+      <a class="extend prev" rel="prev" href="/"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+    </span>
+  </nav>
+
+
 
               </div>
             </div>

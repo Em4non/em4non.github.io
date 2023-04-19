@@ -1,0 +1,697 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="HTTP请求走私简介HTTP请求走私是一种干扰网站处理从一个或多个用户接收的HTTP请求序列的方式，用以绕过安全控制并获得未经授权的访问，执行恶意活动，最早在 2005 年被提出 成因在正常情况下用户发出的 HTTP 请求的流动如下图： 可以看到在长度标记正常的情况下，蓝色和绿色的数据包被正确的区分，不同用户的数据在后端被正确还原  在整个过程中，最关键的是前置服务器和后端服务器应当在 HTTP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HTTP请求走私">
+<meta property="og:url" content="http://example.com/2022/09/16/HTTP%E8%AF%B7%E6%B1%82%E8%B5%B0%E7%A7%81/index.html">
+<meta property="og:site_name" content="Em4non&#39;s Blog">
+<meta property="og:description" content="HTTP请求走私简介HTTP请求走私是一种干扰网站处理从一个或多个用户接收的HTTP请求序列的方式，用以绕过安全控制并获得未经授权的访问，执行恶意活动，最早在 2005 年被提出 成因在正常情况下用户发出的 HTTP 请求的流动如下图： 可以看到在长度标记正常的情况下，蓝色和绿色的数据包被正确的区分，不同用户的数据在后端被正确还原  在整个过程中，最关键的是前置服务器和后端服务器应当在 HTTP">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/Em4non/image-hosting/master/20220914161102.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Em4non/image-hosting/master/20220914162020.png">
+<meta property="article:published_time" content="2022-09-16T06:55:20.000Z">
+<meta property="article:modified_time" content="2022-09-17T01:52:38.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Web学习">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Em4non/image-hosting/master/20220914161102.png">
+  
+  
+  
+  <title>HTTP请求走私 - Em4non&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="/%3Chttps:/lib.baomitu.com/twitter-bootstrap/4.6.1/%3E/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="/%3Chttps:/lib.baomitu.com/github-markdown-css/4.0.0/%3E/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="/%3Chttps:/lib.baomitu.com/hint.css/2.7.0/%3E/hint.min.css" />
+
+  <link  rel="stylesheet" href="/%3Chttps:/lib.baomitu.com/fancybox/3.5.7/%3E/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Em4non Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="HTTP请求走私"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-09-16 14:55" pubdate>
+          2022年9月16日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          22 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">HTTP请求走私</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="HTTP请求走私"><a href="#HTTP请求走私" class="headerlink" title="HTTP请求走私"></a>HTTP请求走私</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>HTTP请求走私是一种干扰网站处理从一个或多个用户接收的HTTP请求序列的方式，用以绕过安全控制并获得未经授权的访问，执行恶意活动，最早在 2005 年被提出</p>
+<h2 id="成因"><a href="#成因" class="headerlink" title="成因"></a>成因</h2><p>在正常情况下用户发出的 HTTP 请求的流动如下图：</p>
+<p>可以看到在长度标记正常的情况下，蓝色和绿色的数据包被正确的区分，不同用户的数据在后端被正确还原</p>
+<p><img src="https://raw.githubusercontent.com/Em4non/image-hosting/master/20220914161102.png" srcset="/img/loading.gif" lazyload></p>
+<p>在整个过程中，最关键的是<strong>前置服务器和后端服务器应当在 HTTP 请求的边界划分上达成一致</strong>，否则就会导致下图所示的异常：</p>
+<p><img src="https://raw.githubusercontent.com/Em4non/image-hosting/master/20220914162020.png" srcset="/img/loading.gif" lazyload></p>
+<p>（图中橙色的部分为走私的内容）</p>
+<p>当我们向代理服务器发送一个比较模糊（接收到的实际长度和报文中标的长度不同）的 HTTP 请求时，由于两者服务器的实现方式不同，可能代理服务器认为这是一个 HTTP 请求</p>
+<p>即前端服务器和后端服务器对客户端传入的数据理解不一致的情况，即 <code>Content-Length</code> 和 <code>Transfer-Encoding</code> 标头。然后将其转发给了后端的源站服务器，但源站服务器经过解析处理后，只认为其中的一部分为正常请求，剩下的那一部分，<strong>就算是走私的请求</strong>，当该部分对正常用户的请求造成了影响之后，就实现了 HTTP 走私攻击</p>
+<h2 id="Content-Length和Transfer-Encoding"><a href="#Content-Length和Transfer-Encoding" class="headerlink" title="Content-Length和Transfer-Encoding"></a>Content-Length和Transfer-Encoding</h2><h3 id="Content-Length"><a href="#Content-Length" class="headerlink" title="Content-Length"></a>Content-Length</h3><p>HTTP状态码，代表 HTTP消息长度, 用<strong>十进制数字</strong>表示. 若Content-Length比实际消息长度短, 请求被截断, 而且下一个请求解析出现错乱.。Content-Length比实际消息长度长，请求将无响应直到超时</p>
+<h3 id="Transfer-Encoding-chunked"><a href="#Transfer-Encoding-chunked" class="headerlink" title="Transfer-Encoding: chunked"></a><strong>Transfer-Encoding: chunked</strong></h3><p>代表数据以一系列分块的形式进行发送.。Content-Length 首部在这种情况下应该不被发送。 在每一个分块的开头需要添加当前分块的长度, 以<strong>十六进制</strong>的形式表示，后面紧跟着 \r\n(回车换行) , 之后是分块本身, 后面也是\r\n。 终止块是一个常规的分块, 不同之处在于其长度为0。后面跟两个\r\n</p>
+<h2 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h2><ul>
+<li><p>CL-TE：前端服务器使用 <code>Content-Length</code> 头，后端服务器使用 <code>Transfer-Encoding</code> 头</p>
+<p>前置服务器认为 <code>Content-Length</code> 优先级更高（或者根本就不支持 <code>Transfer-Encoding</code> ） ，后端认为 <code>Transfer-Encoding</code> 优先级更高</p>
+</li>
+</ul>
+<p>所谓CL-TE，顾名思义就是收到包含Content-Length和Transfer-Encoding这两个请求头的请求时，前端代理服务器按照Content-Length这一请求头定界，而后端服务器则以Transfer-Encoding请求头为标准</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs http"><span class="hljs-keyword">POST</span> <span class="hljs-string">/</span> <span class="hljs-meta">HTTP/1.1</span><br><span class="hljs-attribute">Host</span><span class="hljs-punctuation">: </span>example.com<br><span class="hljs-attribute">Content-Length</span><span class="hljs-punctuation">: </span>16<br><span class="hljs-attribute">Transfer-Encoding</span><span class="hljs-punctuation">: </span>chunked<br>0<br><br><span class="language-ebnf"><span class="hljs-attribute">chunkedcode</span></span><br></code></pre></td></tr></table></figure>
+
+<p>前端服务器处理Content-Length头并确定请求主体长度为16个字节，直到chunkedcode结束。此请求将转发到后端服务器</p>
+<p>后端服务器处理Transfer-Encoding标头，因此将消息体视为使用分块编码。它处理第一个块，它被称为零长度，因此被视为终止请求。缓冲区内还剩下chunkedcode，由于存在pipeline技术，后端服务器将这些字节视为队列中下一个请求的开始</p>
+<p>如果此时其他用户此时发送了一个 GET 请求，就会与 chunkedcode 拼接成一个畸形的 chunkedcodeGET，造成服务器解析异常</p>
+<ul>
+<li>CL-CL：前端和后端服务器都支持 <code>Content-Length</code> 标头</li>
+</ul>
+<p>攻击者可以恶意构造一个特殊的请求</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs http"><span class="hljs-keyword">POST</span> <span class="hljs-string">/</span> <span class="hljs-meta">HTTP/1.1</span><br><span class="hljs-attribute">Host</span><span class="hljs-punctuation">: </span>example.com<br><span class="hljs-attribute">Content-Length</span><span class="hljs-punctuation">: </span>5<br>123<br>A<br></code></pre></td></tr></table></figure>
+
+<p>后端服务器获取到的数据包长度为5。当读取完前5个字符后，后端服务器认为该请求已经读取完毕，然后发送出去。而此时的缓冲区去还剩余一个字母 A，对于后端服务器来说，这个 A是下一个请求的一部分，但是还没有传输完毕</p>
+<p>此时恰巧有一个其他的正常用户对服务器进行了请求，则该A字母会拼凑到下一个正常用户请求的前面，攻击在此展开</p>
+<ul>
+<li>TE-CL：前端服务器使用 <code>Transfer-Encoding</code> 标头，后端服务器使用 <code>Content-Length</code> 标头。</li>
+</ul>
+<p>这种情况则属于前端服务器处理Transfer-Encoding请求头，而后端服务器处理Content-Length请求头</p>
+<p>构造数据包</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs http"><span class="hljs-keyword">POST</span> <span class="hljs-string">/</span> <span class="hljs-meta">HTTP/1.1</span><br>Host:example.com<br><span class="hljs-attribute">Content-Length</span><span class="hljs-punctuation">: </span>3<br><span class="hljs-attribute">Transfer-Encoding</span><span class="hljs-punctuation">: </span>chunked<br>chunkedcode<br>0<br></code></pre></td></tr></table></figure>
+
+<p>前端服务器处理Transfer-Encoding请求头，因此将消息体视为使用分块编码，处理第一块时，有11个字节，直到chunkedcodede的最后一个字节。开始处理第二个块，第二块是0个字节，视为终止请求。此时把请求转发到后端。而后端则在11处完成了对第一个数据包的读取，chunkedcodern0为下一个数据包的开始部分</p>
+<ul>
+<li>TE-TE：前端和后端服务器都支持 <code>Transfer-Encoding</code> 标头，但是可以通过以某种方式来诱导其中一个服务器不处理它。</li>
+</ul>
+<p>前端服务器处理第一个Transfer-Encoding请求头，后端服务器处理第二个Transfer-Encoding请求头。</p>
+<p>构造数据包</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs http">Host:example.com<br><span class="hljs-attribute">Content-length</span><span class="hljs-punctuation">: </span>3<br><span class="hljs-attribute">Transfer-Encoding</span><span class="hljs-punctuation">: </span>chunked<br><span class="hljs-attribute">Transfer-encoding</span><span class="hljs-punctuation">: </span>error<br>chunkedcode<br>0<br></code></pre></td></tr></table></figure>
+
+<p>这里是用了两个Transfer-Encoding 字段，并且第二个 TE 字段值为错误值，这里 前端服务器选择对第一个 Transfer-Encoding进行处理，整个请求正常，原封不动转发给后端服务器，而后端服务器则以第二个Transfer-Encoding 字段进行优先处理，而第二个Transfer-Encoding 字段非标准值，根据RPC规范，则会取Content-Length字段进行处理，这样这个请求就会被拆分为两个请求。</p>
+<p>参考：<a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/7501">https://xz.aliyun.com/t/7501</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/210036">https://www.anquanke.com/post/id/210036</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E8%87%AA%E4%B8%BB%E5%AD%A6%E4%B9%A0/" class="category-chain-item">自主学习</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Web%E5%AD%A6%E4%B9%A0/">#Web学习</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>HTTP请求走私</div>
+      <div>http://example.com/2022/09/16/HTTP请求走私/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>John Doe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年9月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/09/22/WebSocket%E5%8A%AB%E6%8C%81/" title="WebSocket劫持（CSWSH）">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">WebSocket劫持（CSWSH）</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/08/02/Nodejs%E5%8E%9F%E5%9E%8B%E9%93%BE%E6%B1%A1%E6%9F%93/" title="">
+                        <span class="hidden-mobile"></span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="<https://hexo.io>" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="<https://github.com/fluid-dev/hexo-theme-fluid>" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="/%3Chttps:/lib.baomitu.com/nprogress/0.2.0/%3E/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="/%3Chttps:/lib.baomitu.com/nprogress/0.2.0/%3E/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="/%3Chttps:/lib.baomitu.com/jquery/3.6.0/%3E/jquery.min.js" ></script>
+<script  src="/%3Chttps:/lib.baomitu.com/twitter-bootstrap/4.6.1/%3E/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="/%3Chttps:/lib.baomitu.com/typed.js/2.0.12/%3E/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('/%3Chttps:/lib.baomitu.com/tocbot/4.18.2/%3E/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=/%3Chttps:/lib.baomitu.com/clipboard.js/2.0.11/%3E/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('/%3Chttps:/lib.baomitu.com/anchor-js/4.3.1/%3E/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('/%3Chttps:/lib.baomitu.com/fancybox/3.5.7/%3E/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
