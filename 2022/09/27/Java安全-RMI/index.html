@@ -1,0 +1,216 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Java安全-RMI | Em4non's Blog</title><meta name="author" content="Em4non"><meta name="copyright" content="Em4non"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Java安全-RMI前言RMI 在 Java 里面还是很常用的，后续 Java 安全章节也会涉及到诸多 RMI 的问题，所以先学习一下有关RMI的相关部分 RMI概述RMI全称为Remote Method Invocation（远程方法调用），是java编程语言中，一种实现远程过程调用的应用程序编程接口，存储于java.rmi包中，使用其方法调用对象时，必须实现Remote远程接口，能够让某个ja">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java安全-RMI">
+<meta property="og:url" content="https://em4non.github.io/2022/09/27/Java%E5%AE%89%E5%85%A8-RMI/index.html">
+<meta property="og:site_name" content="Em4non&#39;s Blog">
+<meta property="og:description" content="Java安全-RMI前言RMI 在 Java 里面还是很常用的，后续 Java 安全章节也会涉及到诸多 RMI 的问题，所以先学习一下有关RMI的相关部分 RMI概述RMI全称为Remote Method Invocation（远程方法调用），是java编程语言中，一种实现远程过程调用的应用程序编程接口，存储于java.rmi包中，使用其方法调用对象时，必须实现Remote远程接口，能够让某个ja">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://em4non.github.io/avatar/12.jpg">
+<meta property="article:published_time" content="2022-09-27T04:23:09.000Z">
+<meta property="article:modified_time" content="2023-04-23T01:22:42.770Z">
+<meta property="article:author" content="Em4non">
+<meta property="article:tag" content="Java安全">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://em4non.github.io/avatar/12.jpg"><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="https://em4non.github.io/2022/09/27/Java%E5%AE%89%E5%85%A8-RMI/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Java安全-RMI',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-04-23 09:22:42'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/avatar/12.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">20</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/background/2.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="Em4non's Blog"><span class="site-name">Em4non's Blog</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Java安全-RMI</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-09-27T04:23:09.000Z" title="发表于 2022-09-27 12:23:09">2022-09-27</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-04-23T01:22:42.770Z" title="更新于 2023-04-23 09:22:42">2023-04-23</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%87%AA%E4%B8%BB%E5%AD%A6%E4%B9%A0/">自主学习</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.1k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>4分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Java安全-RMI"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Java安全-RMI"><a href="#Java安全-RMI" class="headerlink" title="Java安全-RMI"></a>Java安全-RMI</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>RMI 在 Java 里面还是很常用的，后续 Java 安全章节也会涉及到诸多 RMI 的问题，所以先学习一下有关RMI的相关部分</p>
+<h2 id="RMI概述"><a href="#RMI概述" class="headerlink" title="RMI概述"></a>RMI概述</h2><p><strong>RMI全称为Remote Method Invocation（远程方法调用），是java编程语言中，一种实现远程过程调用的应用程序编程接口</strong>，存储于java.rmi包中，使用其方法调用对象时，必须实现Remote远程接口，能够让某个java虚拟机上的对象调用另外一个Java虚拟机中的对象上的方法</p>
+<p><strong>简单的来说，就是从一个java虚拟机调用本地或者其他计算机上的另一个java虚拟机中的方法，屏蔽了通信内容，且无需担心JVM中对象的不同（跨JVM操作）</strong></p>
+<h2 id="RMI基本概念"><a href="#RMI基本概念" class="headerlink" title="RMI基本概念"></a>RMI基本概念</h2><p>从RMI设计角度来讲，基本分为三层架构模式来实现RMI，分别为RMI服务端，RMI客户端和RMI注册中心：</p>
+<p><strong>Client-客户端：</strong>客户端调用服务端的方法</p>
+<p><strong>Server-服务端：</strong>远程调用方法对象的提供者，也是代码真正执行的地方，执行结束会返回给客户端一个方法执行的结果</p>
+<p><strong>Registry-注册中心：</strong>其实本质就是一个map，相当于是字典一样，用于客户端查询要调用的方法的引用</p>
+<p>总体RMI的调用实现目的就是调用远程机器的类跟调用一个写在自己的本地的类一样，唯一区别就是RMI服务端提供的方法，被调用的时候该方法是<strong>执行在服务端</strong></p>
+<p>说简单一点就是，服务端那里有一个对象，客户端想要调用服务端里的那个对象的方法，而注册表就像一个中间人，服务端会将自己提供的服务的实现类交给这个中间人。并公开一个名称， 任何客户端都可以通过公开的名称找到这个实现类 , 并调用它</p>
+<p><img src="https://raw.githubusercontent.com/Em4non/image-hosting/master/20220927102041.png"></p>
+<h2 id="RMI的简单实现"><a href="#RMI的简单实现" class="headerlink" title="RMI的简单实现"></a>RMI的简单实现</h2><h3 id="定义一个远程接口"><a href="#定义一个远程接口" class="headerlink" title="定义一个远程接口"></a>定义一个远程接口</h3><p>这个接口需要</p>
+<ul>
+<li>使用public声明，否则客户端在尝试加载实现远程接口的远程对象时会出错</li>
+<li>同时需要继承Remote接口</li>
+<li>接口的方法需要抛出java.rmi.RemoteException</li>
+<li>服务端实现这个远程接口</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> RMI;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.rmi.Remote;</span><br><span class="line"><span class="keyword">import</span> java.rmi.RemoteException;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">HelloInterface</span> <span class="keyword">extends</span> <span class="title class_">Remote</span> &#123;</span><br><span class="line">    String <span class="title function_">Hello</span><span class="params">(String age)</span><span class="keyword">throws</span> RemoteException;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="远程接口的实现类"><a href="#远程接口的实现类" class="headerlink" title="远程接口的实现类"></a>远程接口的实现类</h3><p>远程接口实现类必须继承<code>UnicastRemoteObject</code>类，用于Stub（存根）和 Skeleton（骨架）</p>
+<p>Stub可以看作远程对象在本地的一个代理，囊括了远程对象的具体信息，客户端可以通过这个代理和服务端进行交互。</p>
+<p>Skeleton可以看作为服务端的一个代理，用来处理Stub发送过来的请求，然后去调用客户端需要的请求方法，最终将方法执行结果返回给Stub</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> RMI;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.rmi.RemoteException;</span><br><span class="line"><span class="keyword">import</span> java.rmi.server.UnicastRemoteObject;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 远程接口实现类，继承UnicastRemoteObject类和Hello接口</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RemoteHelloWorld</span> <span class="keyword">extends</span> <span class="title class_">UnicastRemoteObject</span> <span class="keyword">implements</span> <span class="title class_">HelloInterface</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">long</span> <span class="variable">serialVersionUID</span> <span class="operator">=</span> <span class="number">1L</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> <span class="title function_">RemoteHelloWorld</span><span class="params">()</span> <span class="keyword">throws</span> RemoteException &#123;</span><br><span class="line">        <span class="built_in">super</span>(); <span class="comment">// 调用父类的构造函数</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">Hello</span><span class="params">(String age)</span> <span class="keyword">throws</span> RemoteException &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Hello&quot;</span> + age; <span class="comment">// 改写Hello方法</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="RMI服务端"><a href="#RMI服务端" class="headerlink" title="RMI服务端"></a>RMI服务端</h3><p>客户端通过这个URL直接访问远程对象，无需知道远程实例对象的名称</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> RMI;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.rmi.Naming;</span><br><span class="line"><span class="keyword">import</span> java.rmi.registry.LocateRegistry;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 服务端</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RMIServer</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">HelloInterface</span> <span class="variable">h</span>  <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">RemoteHelloWorld</span>(); <span class="comment">// 创建远程对象HelloImp对象实例</span></span><br><span class="line">            LocateRegistry.createRegistry(<span class="number">1099</span>); <span class="comment">// 获取RMI服务注册器</span></span><br><span class="line">            Naming.rebind(<span class="string">&quot;rmi://localhost:1099/hello&quot;</span>,h); <span class="comment">// 绑定远程对象HelloImp到RMI服务注册器</span></span><br><span class="line">            System.out.println(<span class="string">&quot;RMIServer start successful&quot;</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="RMI客户端配置"><a href="#RMI客户端配置" class="headerlink" title="RMI客户端配置"></a>RMI客户端配置</h3><p>客户端只需要调用 java.rmi.Naming.lookup 函数，通过公开的路径从RMIService服务器上拿到对应接口的实现类， 之后通过本地接口即可调用远程对象的方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> RMI;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.net.MalformedURLException;</span><br><span class="line"><span class="keyword">import</span> java.rmi.Naming;</span><br><span class="line"><span class="keyword">import</span> java.rmi.NotBoundException;</span><br><span class="line"><span class="keyword">import</span> java.rmi.RemoteException;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 客户端</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RMIClient</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">HelloInterface</span> <span class="variable">h</span> <span class="operator">=</span> (HelloInterface) Naming.lookup(<span class="string">&quot;rmi://localhost:1099/hello&quot;</span>); <span class="comment">// 寻找RMI实例远程对象</span></span><br><span class="line">            System.out.println(h.Hello(<span class="string">&quot;lkf&quot;</span>));</span><br><span class="line">        &#125;<span class="keyword">catch</span> (MalformedURLException e) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;url格式异常&quot;</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (RemoteException e) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;创建对象异常&quot;</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (NotBoundException e) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;对象未绑定&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://em4non.github.io">Em4non</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://em4non.github.io/2022/09/27/Java%E5%AE%89%E5%85%A8-RMI/">https://em4non.github.io/2022/09/27/Java%E5%AE%89%E5%85%A8-RMI/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://em4non.github.io" target="_blank">Em4non's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Java%E5%AE%89%E5%85%A8/">Java安全</a></div><div class="post_share"><div class="social-share" data-image="/avatar/12.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/09/28/Java%E5%AE%89%E5%85%A8-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" title="Java安全-反序列化"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Java安全-反序列化</div></div></a></div><div class="next-post pull-right"><a href="/2022/09/22/Java%E5%AE%89%E5%85%A8-%E5%8F%8D%E5%B0%84/" title="Java安全-反射"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Java安全-反射</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/12/27/Java%E5%AE%89%E5%85%A8-Fastjson%E5%AD%A6%E4%B9%A0/" title="Java安全-Fastjson学习"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-12-27</div><div class="title">Java安全-Fastjson学习</div></div></a></div><div><a href="/2023/01/16/Java%E5%AE%89%E5%85%A8-JNDI%E6%B3%A8%E5%85%A5/" title="Java安全-JNDI注入"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-01-16</div><div class="title">Java安全-JNDI注入</div></div></a></div><div><a href="/2022/09/22/Java%E5%AE%89%E5%85%A8-%E5%8F%8D%E5%B0%84/" title="Java安全-反射"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-09-22</div><div class="title">Java安全-反射</div></div></a></div><div><a href="/2022/09/28/Java%E5%AE%89%E5%85%A8-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" title="Java安全-反序列化"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-09-28</div><div class="title">Java安全-反序列化</div></div></a></div><div><a href="/2022/10/13/Java%E5%AE%89%E5%85%A8-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96CommonsCollections/" title="Java安全-反序列化CommonsCollections1利用链"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-10-13</div><div class="title">Java安全-反序列化CommonsCollections1利用链</div></div></a></div><div><a href="/2022/09/30/Java%E5%AE%89%E5%85%A8-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96URLDNS/" title="Java安全-反序列化URLDNS"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-09-30</div><div class="title">Java安全-反序列化URLDNS</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/avatar/12.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Em4non</div><div class="author-info__description">Web Dog</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">20</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/em4non"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Em4non" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:kaifenglin@126.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is Em4non's New Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Java%E5%AE%89%E5%85%A8-RMI"><span class="toc-number">1.</span> <span class="toc-text">Java安全-RMI</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RMI%E6%A6%82%E8%BF%B0"><span class="toc-number">1.2.</span> <span class="toc-text">RMI概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RMI%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="toc-number">1.3.</span> <span class="toc-text">RMI基本概念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RMI%E7%9A%84%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.4.</span> <span class="toc-text">RMI的简单实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%E4%B8%80%E4%B8%AA%E8%BF%9C%E7%A8%8B%E6%8E%A5%E5%8F%A3"><span class="toc-number">1.4.1.</span> <span class="toc-text">定义一个远程接口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9C%E7%A8%8B%E6%8E%A5%E5%8F%A3%E7%9A%84%E5%AE%9E%E7%8E%B0%E7%B1%BB"><span class="toc-number">1.4.2.</span> <span class="toc-text">远程接口的实现类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RMI%E6%9C%8D%E5%8A%A1%E7%AB%AF"><span class="toc-number">1.4.3.</span> <span class="toc-text">RMI服务端</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RMI%E5%AE%A2%E6%88%B7%E7%AB%AF%E9%85%8D%E7%BD%AE"><span class="toc-number">1.4.4.</span> <span class="toc-text">RMI客户端配置</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/01/16/Java%E5%AE%89%E5%85%A8-JNDI%E6%B3%A8%E5%85%A5/" title="Java安全-JNDI注入">Java安全-JNDI注入</a><time datetime="2023-01-16T09:48:09.000Z" title="发表于 2023-01-16 17:48:09">2023-01-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/27/Java%E5%AE%89%E5%85%A8-Fastjson%E5%AD%A6%E4%B9%A0/" title="Java安全-Fastjson学习">Java安全-Fastjson学习</a><time datetime="2022-12-27T05:26:09.000Z" title="发表于 2022-12-27 13:26:09">2022-12-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/03/SQL%E7%9B%B2%E6%B3%A8/" title="SQL盲注">SQL盲注</a><time datetime="2022-12-03T07:28:09.000Z" title="发表于 2022-12-03 15:28:09">2022-12-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/11/18/JavaScript%E5%AD%A6%E4%B9%A0/" title="JavaScript学习">JavaScript学习</a><time datetime="2022-11-18T11:23:09.000Z" title="发表于 2022-11-18 19:23:09">2022-11-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/11/16/Jsoup%E7%88%AC%E8%99%AB%E5%85%A5%E9%97%A8/" title="Jsoup爬虫入门">Jsoup爬虫入门</a><time datetime="2022-11-16T11:23:09.000Z" title="发表于 2022-11-16 19:23:09">2022-11-16</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2021 - 2023 By Em4non</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Hi, welcome to my blog!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/fireworks.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
